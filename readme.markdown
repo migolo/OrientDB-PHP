@@ -1,18 +1,18 @@
 # OrientDB-PHP #
-A *plain* PHP driver to [OrientDB graph database](http://code.google.com/p/orient/) using its [binary protocol](http://code.google.com/p/orient/wiki/NetworkBinaryProtocol).
+A *plain* PHP driver to [OrientDB graph database](https://github.com/nuvolabase/orientdb) using its [binary protocol](https://github.com/nuvolabase/orientdb/wiki/Network-Binary-Protocol).
 
 ## Description ##
 
-Current status is: *Beta*. (Meaning specs can be changed. However, it's surely usable right now)
+Current status is: *Beta*. (Meaning specs can be changed slightly. However, driver is surely usable right now)
 
 Code is licensed under New BSD License and provided "as is". For complete license information see file `LICENSE`.
 
-Current OrientDB version to work with is: `1.2.0-SNAPSHOT`  (2012-08-20) (revision r6467).
-It can be downloaded from OrientDB's [Downloads page](http://code.google.com/p/orient/downloads/list).
+Current OrientDB version to work with is: `1.5.0-RELEASE`  (2013-07-30) (revision [4d28095](https://github.com/nuvolabase/orientdb/commit/4d28095)).
+It can be downloaded from OrientDB's [Wiki Downloads page](https://github.com/nuvolabase/orientdb/wiki/Download).
 
-Code compatible to previous [binary releases](http://code.google.com/p/orient/downloads/list) of OrientDB can be found in repository's tags or in [Downloads](https://github.com/AntonTerekhov/OrientDB-PHP/archives/master) section.
+Code compatible to previous binary releases of OrientDB can be found in repository's tags or in [Downloads](https://github.com/AntonTerekhov/OrientDB-PHP/archives/master) section.
 
-Current protocol version implemented: **12**
+Current protocol version implemented: **15**
 
 ## Requirements ##
 
@@ -34,6 +34,8 @@ To install most recent version of library, just type
 
 where you want its file to be located.
 
+You can also install library [via Composer](https://packagist.org/packages/orientdb-php/orientdb-php): https://packagist.org/packages/orientdb-php/orientdb-php
+
 You can also want to get latest stable version, so check out [Downloads](https://github.com/AntonTerekhov/OrientDB-PHP/archives/master) section. Stables are marked with tags including this library version and OrientDB version.
 
 ## Using OrientDB-PHP ##
@@ -49,6 +51,8 @@ OrientDB-PHP is covered with automatic tests by [phpUnit](http://www.phpunit.de/
 You can always re-test the whole library by typing
 
     phpunit Tests/
+
+Don't forget to change root password BEFORE running tests.
 
 ## Function list ##
 
@@ -100,7 +104,7 @@ Available types is:
 * `OrientDB::DB_TYPE_MEMORY` for in memory database
 * `OrientDB::DB_TYPE_LOCAL` for physical database
 
-For difference see official [OrientDB docs](http://code.google.com/p/orient/wiki/Concepts#Storage).
+For difference see official [OrientDB docs](https://github.com/nuvolabase/orientdb/wiki/Concepts#storage).
 
 *Example:*
 
@@ -192,7 +196,7 @@ Due to [PHP's behavior](http://www.php.net/manual/en/language.oop5.references.ph
 
     $recordPos = $db->recordCreate(1, (string) $record);
 
-Please, note, that using OrientDBRecord instance doesn't automatically fill up other function parameters.
+Please, note, that using OrientDBRecord instance in methods (for example, `recordCreate` or `recordCreate`) doesn't automatically fill up other method parameters, you still have to pass them manually.
 
 #### recordDelete ####
 Delete record with specified recordID and optionally, version.
@@ -209,7 +213,7 @@ Default version is `-1`. This means no version check will be done.
     $result = $db->recordDelete('1:1', 1);
 
 #### recordLoad ####
-Load record by recordID and, optionally, [fetchplan](http://code.google.com/p/orient/wiki/FetchingStrategies). Returns record or `false`. In some cases (e.g. recordPos is out of file bounds) can throw an exception
+Load record by recordID and, optionally, [fetchplan](https://github.com/nuvolabase/orientdb/wiki/Fetching-Strategies). Returns record or `false`. In some cases (e.g. recordPos is out of file bounds) can throw an exception
 
     OrientDBRecord $db->recordLoad(string $recordID[, string $fetchPlan]);
 
@@ -286,7 +290,7 @@ Due to [PHP's behavior](http://www.php.net/manual/en/language.oop5.references.ph
 
     $recordPos = $db->recordUpdate('1:1', (string) $record);
 
-Please, note, that using OrientDBRecord instance doesn't automatically fill up other function parameters.
+Please, note, that using OrientDBRecord instance in methods (for example, `recordCreate` or `recordCreate`) doesn't automatically fill up other method parameters, you still have to pass them manually.
 
 ### Config commands ###
 
@@ -385,7 +389,7 @@ Get count of records in cluster specified by clusterName. Returns `int` or throw
 
 ## Querying server ##
 ### command ###
-This command provide an ability to execute remote [SQL commands](http://code.google.com/p/orient/wiki/SQL). Returns mixed or throws an exception.
+This command provide an ability to execute remote [SQL commands](https://github.com/nuvolabase/orientdb/wiki/SQL). Returns mixed or throws an exception.
 
     mixed $db->command(int $commandMode, string $query[, string $fetchplan]);
 
@@ -396,8 +400,9 @@ Command modes available are:
 * `OrientDB::COMMAND_QUERY` - for general queries, including `INSERT`, `UPDATE`, `DELETE`, `FIND REFERENCES`, etc.
 * `OrientDB::COMMAND_SELECT_SYNC` - only for `SELECT` in synchronous mode
 * `OrientDB::COMMAND_SELECT_ASYNC` - only for `SELECT` in asynchronous mode
+* `OrientDB::COMMAND_SELECT_GREMLIN` - only for Gremlin engine, available with OrientDB - Graph Edition only
 
-[Fetchplan](http://code.google.com/p/orient/wiki/FetchingStrategies) is used to pre-fetch some records. **Fetchplan is only available in `OrientDB::COMMAND_SELECT_ASYNC` mode.**
+[Fetchplan](https://github.com/nuvolabase/orientdb/wiki/Fetching-Strategies) is used to pre-fetch some records.
 Using fetchplan will populate `$db->cachedRecords` array as for `recordLoad()`.
 
 Default fetchplan is `*:0`.
@@ -439,8 +444,19 @@ Is an alias for command(OrientDB::COMMAND_QUERY, string $query).
 
     $records = $db->query('insert into city (name, country) values ("Potenza", #14:1)   ');
 
+### selectGremlin ###
+Is an alias for command(OrientDB::COMMAND_SELECT_GREMLIN, string $query[, string $fetchplan]). Please referrer to [Gremlin page](https://github.com/nuvolabase/orientdb/wiki/Gremlin).
+**Gremlin support is experimental.**
+
+    mixed $db->selectGremlin(string $query[, string $fetchplan]);
+
+*Example:*
+
+    $records = $db->selectGremlin('g.V', '*:-1');
+
+## Other commands ##
 ### shutdown ###
-Remotely shutdown OrientDB server. Require valid user name and password. See [manual](http://code.google.com/p/orient/wiki/NetworkBinaryProtocol#SHUTDOWN) for details.
+Remotely shutdown OrientDB server. Require valid user name and password. See [manual](https://github.com/nuvolabase/orientdb/wiki/Network-Binary-Protocol#SHUTDOWN) for details.
 Returns nothing on success or throws an exception.
 
     void $db->shutdown(string $userName, string $password);
@@ -493,7 +509,7 @@ In general, there is no need to call this method directly from user code, as rec
 * `reset()` -  fully reset class fields, equals to `new`
 * `resetData()` - will reset class data, except for `clusterID` and `className`.
 
-Class is able to parse almost any [record format](http://code.google.com/p/orient/wiki/NetworkBinaryProtocol#Record_format) as received from OrientDB server. However, there are some limitations about few [Java primitive data types](http://download.oracle.com/javase/tutorial/java/nutsandbolts/datatypes.html), e.g. short. This is a planned TODO.
+Class is able to parse almost any [record format](https://github.com/nuvolabase/orientdb/wiki/Network-Binary-Protocol#Record_format) as received from OrientDB server. However, there are some limitations about few [Java primitive data types](http://download.oracle.com/javase/tutorial/java/nutsandbolts/datatypes.html), e.g. short. This is a planned TODO.
 
 ### OrientDBData Class ###
 This class is used to store deserialized content of record. Deserialization is done "on the fly" while code accessing some of the class fields.
@@ -699,11 +715,11 @@ The above example will output debug messages only for `recordLoad()` to standard
 * Support for async mode for RECORD_CREATE, RECORD_UPDATE, RECORD_DELETE
 * Support for converting string `'true'` to actual boolean `true` (and other values) in SQL
 * Use aliases for query serialization ('q' and 'c') instead of long class names
-* Parse [special Linkset](http://code.google.com/p/orient/wiki/NetworkBinaryProtocol#Special_use_of_LINKSET_types)
+* Parse [special Linkset](https://github.com/nuvolabase/orientdb/wiki/Network-Binary-Protocol#Special_use_of_LINKSET_types)
 * Internally process some OrientDB's exceptions and return false (For example - `DBDelete()`)
 
 ## Known bugs ##
-* Connecting to OrientDB instance, which is listening 0.0.0.0 (default for OrientDB) can cause errors. Change to 127.0.0.1 in Orient's configuration. [See issue](http://code.google.com/p/orient/issues/detail?id=605)
+* Connecting to OrientDB instance, which is listening 0.0.0.0 (default for OrientDB) can cause errors. Change to 127.0.0.1 in Orient's configuration. [See origina issue](http://code.google.com/p/orient/issues/detail?id=605), [see github issue](https://github.com/nuvolabase/orientdb/issues/605)
 * Only database with type 'document' is supported right now.
 
 ## If you found a bug ##

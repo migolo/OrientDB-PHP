@@ -2,7 +2,7 @@
 
 /**
  * @author Anton Terekhov <anton@netmonsters.ru>
- * @copyright Copyright Anton Terekhov, NetMonsters LLC, 2011
+ * @copyright Copyright Anton Terekhov, NetMonsters LLC, 2011-2013
  * @license https://github.com/AntonTerekhov/OrientDB-PHP/blob/master/LICENSE
  * @link https://github.com/AntonTerekhov/OrientDB-PHP
  * @package OrientDB-PHP
@@ -107,6 +107,7 @@ class OrientDBDBDeleteTest extends OrientDB_TestCase
         $this->sequenceInc();
         $this->db->connect('root', $this->root_password);
         $this->setExpectedException('OrientDBWrongParamsException');
+        /** @noinspection PhpParamsInspection */
         $result = $this->db->DBDelete();
     }
 }

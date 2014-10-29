@@ -2,7 +2,7 @@
 
 /**
  * @author Anton Terekhov <anton@netmonsters.ru>
- * @copyright Copyright Anton Terekhov, NetMonsters LLC, 2011
+ * @copyright Copyright Anton Terekhov, NetMonsters LLC, 2011-2012
  * @license https://github.com/AntonTerekhov/OrientDB-PHP/blob/master/LICENSE
  * @link https://github.com/AntonTerekhov/OrientDB-PHP
  * @package OrientDB-PHP
@@ -740,5 +740,28 @@ class OrientDBRecordTest extends PHPUnit_Framework_TestCase
         $this->assertNull($record->version);
         $this->assertNull($record->content);
         $this->assertSame($record->data->getKeys(), array());
+    }
+
+    public function testParseRecordContentSetAndList()
+    {
+        $content = 'JavaComplexTestClass@children:{"first":#24:4,"The Observer":#24:22},name:"Silvester",list:[#24:0,#24:1,#24:2,#24:3],enumList:["ENUM1","ENUM2"],enumSet:<"ENUM1","ENUM3">,enumMap:{"2":"ENUM3","1":"ENUM2"}';
+
+        $record = new OrientDBRecord();
+        $record->content = $content;
+        $record->parse();
+
+        $this->assertSame('JavaComplexTestClass', $record->className);
+        $this->assertInternalType('array', $record->data->children);
+        $this->assertCount(2, $record->data->children);
+        $this->assertSame('Silvester', $record->data->name);
+        $this->assertInternalType('array', $record->data->list);
+        $this->assertCount(4, $record->data->list);
+        $this->assertInternalType('array', $record->data->enumList);
+        $this->assertCount(2, $record->data->enumList);
+        $this->assertInternalType('array', $record->data->enumSet);
+        $this->assertCount(2, $record->data->enumSet);
+        $this->assertInternalType('array', $record->data->enumMap);
+        $this->assertCount(2, $record->data->enumMap);
+        $this->assertEquals(array('2' => 'ENUM3', '1' => 'ENUM2'), $record->data->enumMap);
     }
 }

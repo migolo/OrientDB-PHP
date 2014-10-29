@@ -2,7 +2,7 @@
 
 /**
  * @author Anton Terekhov <anton@netmonsters.ru>
- * @copyright Copyright Anton Terekhov, NetMonsters LLC, 2011
+ * @copyright Copyright Anton Terekhov, NetMonsters LLC, 2011-2013
  * @license https://github.com/AntonTerekhov/OrientDB-PHP/blob/master/LICENSE
  * @link https://github.com/AntonTerekhov/OrientDB-PHP
  * @package OrientDB-PHP
@@ -33,6 +33,7 @@ class OrientDBClassBasicTest extends OrientDB_TestCase
 
     /**
      * @outputBuffering enabled
+     * @medium
      */
     public function testDebug()
     {
@@ -43,11 +44,13 @@ class OrientDBClassBasicTest extends OrientDB_TestCase
         $this->assertTrue($this->db->isDebug());
         $this->db->setDebug(false);
         $this->assertFalse($this->db->isDebug());
+        $this->expectOutputRegex('/protocol_version/');
     }
 
     public function testMethodNotImplemented()
     {
         $this->setExpectedException('OrientDBWrongCommandException');
+        /** @noinspection PhpUndefinedMethodInspection */
         $this->db->methodNotExist();
     }
 
@@ -56,5 +59,4 @@ class OrientDBClassBasicTest extends OrientDB_TestCase
         $this->setExpectedException('OrientDBException');
         $this->db->setProtocolVersion(1);
     }
-
 }

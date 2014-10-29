@@ -2,7 +2,7 @@
 
 /**
  * @author Anton Terekhov <anton@netmonsters.ru>
- * @copyright Copyright Anton Terekhov, NetMonsters LLC, 2011
+ * @copyright Copyright Anton Terekhov, NetMonsters LLC, 2011-2013
  * @license https://github.com/AntonTerekhov/OrientDB-PHP/blob/master/LICENSE
  * @link https://github.com/AntonTerekhov/OrientDB-PHP
  * @package OrientDB-PHP
@@ -35,8 +35,8 @@ class OrientDBDBCreateTest extends OrientDB_TestCase
         if ($this->db->isConnected()) {
             try {
                 $result = $this->db->DBDelete($this->getDBName());
-            } catch (OrientDBException $e) {
-
+            }
+            catch (OrientDBException $e) {
             }
         }
         $this->db = null;
@@ -169,6 +169,7 @@ class OrientDBDBCreateTest extends OrientDB_TestCase
         $this->sequenceInc();
         $this->db->connect('root', $this->root_password);
         $this->setExpectedException('OrientDBWrongParamsException');
+        /** @noinspection PhpParamsInspection */
         $result = $this->db->DBCreate($this->getDBName());
     }
 

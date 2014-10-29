@@ -2,7 +2,7 @@
 
 /**
  * @author Anton Terekhov <anton@netmonsters.ru>
- * @copyright Copyright Anton Terekhov, NetMonsters LLC, 2011
+ * @copyright Copyright Anton Terekhov, NetMonsters LLC, 2011-2013
  * @license https://github.com/AntonTerekhov/OrientDB-PHP/blob/master/LICENSE
  * @link https://github.com/AntonTerekhov/OrientDB-PHP
  * @package OrientDB-PHP
@@ -34,6 +34,7 @@ class OrientDBCommandTest extends OrientDB_TestCase
     public function testCommandOnNotConnectedDB()
     {
         $this->setExpectedException('OrientDBWrongCommandException');
+        /** @noinspection PhpParamsInspection */
         $list = $this->db->command('');
     }
 
@@ -41,12 +42,14 @@ class OrientDBCommandTest extends OrientDB_TestCase
     {
         $this->db->connect('root', $this->root_password);
         $this->setExpectedException('OrientDBWrongCommandException');
+        /** @noinspection PhpParamsInspection */
         $list = $this->db->command('');
     }
 
     public function testCommandOnNotOpenDB()
     {
         $this->setExpectedException('OrientDBWrongCommandException');
+        /** @noinspection PhpParamsInspection */
         $list = $this->db->command('');
     }
 
@@ -62,6 +65,7 @@ class OrientDBCommandTest extends OrientDB_TestCase
     {
         $this->db->DBOpen('demo', 'writer', 'writer');
         $this->setExpectedException('OrientDBWrongParamsException');
+        /** @noinspection PhpParamsInspection */
         $record = $this->db->command();
     }
 
@@ -69,6 +73,7 @@ class OrientDBCommandTest extends OrientDB_TestCase
     {
         $this->db->DBOpen('demo', 'writer', 'writer');
         $this->setExpectedException('OrientDBWrongParamsException');
+        /** @noinspection PhpParamsInspection */
         $record = $this->db->command(OrientDB::COMMAND_QUERY);
     }
 
@@ -126,7 +131,7 @@ class OrientDBCommandTest extends OrientDB_TestCase
     public function testCommandWithModeSync()
     {
         $this->db->DBOpen('demo', 'writer', 'writer');
-        $records = $this->db->command(OrientDB::COMMAND_SELECT_SYNC, 'select * from [18:1]');
+        $records = $this->db->command(OrientDB::COMMAND_SELECT_SYNC, 'select * from [21:1]');
         $this->assertInternalType('array', $records);
         $this->assertInstanceOf('OrientDBRecord', array_pop($records));
     }
@@ -217,6 +222,9 @@ class OrientDBCommandTest extends OrientDB_TestCase
         $this->assertInternalType('string', $record);
     }
 
+    /**
+     * @medium
+     */
     public function testCommandFindReference()
     {
         $this->db->DBOpen('demo', 'writer', 'writer');
@@ -236,7 +244,7 @@ class OrientDBCommandTest extends OrientDB_TestCase
         $this->db->DBOpen('demo', 'admin', 'admin');
         $clusterID = $this->db->dataclusterAdd($clusterName, OrientDB::DATACLUSTER_TYPE_PHYSICAL);
 
-        $classID = $this->db->command(OrientDB::COMMAND_QUERY, 'CREATE CLASS ' . $className . ' ' . $clusterID);
+        $classID = $this->db->command(OrientDB::COMMAND_QUERY, 'CREATE CLASS ' . $className . ' CLUSTER ' . $clusterID);
         $this->assertInternalType('string', $classID);
         $propertyResult = $this->db->command(OrientDB::COMMAND_QUERY, 'CREATE PROPERTY ' . $className . '.' . $propertyName . ' INTEGER');
         $this->assertSame('1', $propertyResult);

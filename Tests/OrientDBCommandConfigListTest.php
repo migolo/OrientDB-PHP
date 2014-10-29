@@ -2,7 +2,7 @@
 
 /**
  * @author Anton Terekhov <anton@netmonsters.ru>
- * @copyright Copyright Anton Terekhov, NetMonsters LLC, 2011
+ * @copyright Copyright Anton Terekhov, NetMonsters LLC, 2011-2013
  * @license https://github.com/AntonTerekhov/OrientDB-PHP/blob/master/LICENSE
  * @link https://github.com/AntonTerekhov/OrientDB-PHP
  * @package OrientDB-PHP
@@ -37,6 +37,9 @@ class OrientDBConfigListTest extends OrientDB_TestCase
         $list = $this->db->configList();
     }
 
+    /**
+     * @large
+     */
     public function testConfigListOnConnectedDB()
     {
         $this->db->connect('root', $this->root_password);

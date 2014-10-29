@@ -2,7 +2,7 @@
 
 /**
  * @author Anton Terekhov <anton@netmonsters.ru>
- * @copyright Copyright Anton Terekhov, NetMonsters LLC, 2011
+ * @copyright Copyright Anton Terekhov, NetMonsters LLC, 2011-2013
  * @license https://github.com/AntonTerekhov/OrientDB-PHP/blob/master/LICENSE
  * @link https://github.com/AntonTerekhov/OrientDB-PHP
  * @package OrientDB-PHP
@@ -50,6 +50,7 @@ class OrientDBDataclusterRemoveTest extends OrientDB_TestCase
     public function testDataclusterRemoveOnNotOpenDB()
     {
         $this->setExpectedException('OrientDBWrongCommandException');
+        /** @noinspection PhpParamsInspection */
         $result = $this->db->dataclusterRemove();
     }
 
@@ -79,6 +80,7 @@ class OrientDBDataclusterRemoveTest extends OrientDB_TestCase
     {
         $this->db->DBOpen('demo', 'writer', 'writer');
         $this->setExpectedException('OrientDBWrongParamsException');
+        /** @noinspection PhpParamsInspection */
         $result = $this->db->dataclusterRemove();
     }
 

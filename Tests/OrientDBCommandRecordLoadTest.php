@@ -2,7 +2,7 @@
 
 /**
  * @author Anton Terekhov <anton@netmonsters.ru>
- * @copyright Copyright Anton Terekhov, NetMonsters LLC, 2011
+ * @copyright Copyright Anton Terekhov, NetMonsters LLC, 2011-2013
  * @license https://github.com/AntonTerekhov/OrientDB-PHP/blob/master/LICENSE
  * @link https://github.com/AntonTerekhov/OrientDB-PHP
  * @package OrientDB-PHP
@@ -23,7 +23,7 @@ class OrientDBRecordLoadTest extends OrientDB_TestCase
 
     protected $clusterID = 2;
 
-    protected $addressClusterID = 16;
+    protected $addressClusterID;
 
     protected $recordContent = 'testrecord:0';
 
@@ -40,6 +40,7 @@ class OrientDBRecordLoadTest extends OrientDB_TestCase
     public function testRecordLoadOnNotConnectedDB()
     {
         $this->setExpectedException('OrientDBWrongCommandException');
+        /** @noinspection PhpParamsInspection */
         $list = $this->db->recordLoad();
     }
 
@@ -47,12 +48,14 @@ class OrientDBRecordLoadTest extends OrientDB_TestCase
     {
         $this->db->connect('root', $this->root_password);
         $this->setExpectedException('OrientDBWrongCommandException');
+        /** @noinspection PhpParamsInspection */
         $list = $this->db->recordLoad();
     }
 
     public function testRecordLoadOnNotOpenDB()
     {
         $this->setExpectedException('OrientDBWrongCommandException');
+        /** @noinspection PhpParamsInspection */
         $list = $this->db->recordLoad();
     }
 
@@ -74,6 +77,7 @@ class OrientDBRecordLoadTest extends OrientDB_TestCase
     {
         $this->db->DBOpen('demo', 'writer', 'writer');
         $this->setExpectedException('OrientDBWrongParamsException');
+        /** @noinspection PhpParamsInspection */
         $record = $this->db->recordLoad();
     }
 
@@ -133,16 +137,18 @@ class OrientDBRecordLoadTest extends OrientDB_TestCase
 
     public function testRecordLoadWithFetchPlan()
     {
-        $this->db->DBOpen('demo', 'writer', 'writer');
+        $info = $this->db->DBOpen('demo', 'writer', 'writer');
         // Load record Address:100
+        $this->addressClusterID = $this->getClusterIdByClusterName($info, 'address');
         $record = $this->db->recordLoad($this->addressClusterID . ':' . 100, '*:-1');
         $this->assertInstanceOf('OrientDBRecord', $record);
     }
 
     public function testRecordLoadWithFetchPlanAnyOneItem()
     {
-        $this->db->DBOpen('demo', 'writer', 'writer');
-        // Load record Address:1
+        $info = $this->db->DBOpen('demo', 'writer', 'writer');
+        // Load record Address:100
+        $this->addressClusterID = $this->getClusterIdByClusterName($info, 'address');
         $this->assertEmpty($this->db->cachedRecords);
         $record = $this->db->recordLoad($this->addressClusterID . ':' . 100, '*:1');
         $this->assertInstanceOf('OrientDBRecord', $record);
@@ -153,8 +159,9 @@ class OrientDBRecordLoadTest extends OrientDB_TestCase
 
     public function testRecordLoadWithFetchPlanAnyManyItems()
     {
-        $this->db->DBOpen('demo', 'writer', 'writer');
-        // Load record Address:1
+        $info = $this->db->DBOpen('demo', 'writer', 'writer');
+        // Load record Address:100
+        $this->addressClusterID = $this->getClusterIdByClusterName($info, 'address');
         $this->assertEmpty($this->db->cachedRecords);
         $record = $this->db->recordLoad($this->addressClusterID . ':' . 100, '*:2');
         $this->assertInstanceOf('OrientDBRecord', $record);
@@ -228,6 +235,9 @@ class OrientDBRecordLoadTest extends OrientDB_TestCase
         $this->assertNotEmpty($record->data);
     }
 
+    /**
+     * @medium
+     */
     public function testRecordLoadFromZeroClusterPosOne()
     {
         $rid = '0:1';
@@ -235,6 +245,5 @@ class OrientDBRecordLoadTest extends OrientDB_TestCase
         $record = $this->db->recordLoad($rid);
         $this->assertInstanceOf('OrientDBRecord', $record);
         $this->assertSame($rid, $record->recordID);
-        $this->assertNotEmpty($record->data->indexes);
     }
 }

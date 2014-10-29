@@ -2,7 +2,7 @@
 
 /**
  * @author Anton Terekhov <anton@netmonsters.ru>
- * @copyright Copyright Anton Terekhov, NetMonsters LLC, 2011
+ * @copyright Copyright Anton Terekhov, NetMonsters LLC, 2011-2013
  * @license https://github.com/AntonTerekhov/OrientDB-PHP/blob/master/LICENSE
  * @link https://github.com/AntonTerekhov/OrientDB-PHP
  * @package OrientDB-PHP
@@ -62,6 +62,7 @@ class OrientDBSelectTest extends OrientDB_TestCase
     {
         $this->db->DBOpen('demo', 'writer', 'writer');
         $this->setExpectedException('OrientDBWrongParamsException');
+        /** @noinspection PhpParamsInspection */
         $record = $this->db->select();
     }
 
@@ -88,19 +89,20 @@ class OrientDBSelectTest extends OrientDB_TestCase
         $record = reset($records);
         $this->assertSame($record->data->name, 'Rome');
         $this->assertSame(-2, $record->clusterID);
-        $this->assertSame(0, $record->recordPos);
+        $this->assertSame(1, $record->recordPos);
         $this->assertNull($record->recordID);
     }
 
     public function testFieldsSelectWithRid()
     {
-        $this->db->DBOpen('demo', 'writer', 'writer');
+        $info = $this->db->DBOpen('demo', 'writer', 'writer');
+        $city_cluster_id = $this->getClusterIdByClusterName($info, 'city');
         $record = $this->db->select('SELECT name, @rid FROM City WHERE name = "Rome" LIMIT 1');
         $record = reset($record);
         $this->assertSame('Rome', $record->data->name);
-        $this->assertSame('#18:0', (string) $record->data->rid);
+        $this->assertSame('#' . $city_cluster_id . ':0', (string) $record->data->rid);
         $this->assertSame(-2, $record->clusterID);
-        $this->assertSame(0, $record->recordPos);
+        $this->assertSame(1, $record->recordPos);
         $this->assertNull($record->recordID);
     }
 }

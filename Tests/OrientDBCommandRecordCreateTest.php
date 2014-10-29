@@ -2,7 +2,7 @@
 
 /**
  * @author Anton Terekhov <anton@netmonsters.ru>
- * @copyright Copyright Anton Terekhov, NetMonsters LLC, 2011
+ * @copyright Copyright Anton Terekhov, NetMonsters LLC, 2011-2013
  * @license https://github.com/AntonTerekhov/OrientDB-PHP/blob/master/LICENSE
  * @link https://github.com/AntonTerekhov/OrientDB-PHP
  * @package OrientDB-PHP
@@ -38,6 +38,7 @@ class OrientDBRecordCreateTest extends OrientDB_TestCase
     public function testRecordCreateOnNotConnectedDB()
     {
         $this->setExpectedException('OrientDBWrongCommandException');
+        /** @noinspection PhpParamsInspection */
         $list = $this->db->recordCreate();
     }
 
@@ -45,12 +46,14 @@ class OrientDBRecordCreateTest extends OrientDB_TestCase
     {
         $this->db->connect('root', $this->root_password);
         $this->setExpectedException('OrientDBWrongCommandException');
+        /** @noinspection PhpParamsInspection */
         $list = $this->db->recordCreate();
     }
 
     public function testRecordCreateOnNotOpenDB()
     {
         $this->setExpectedException('OrientDBWrongCommandException');
+        /** @noinspection PhpParamsInspection */
         $list = $this->db->recordCreate();
     }
 
@@ -66,6 +69,7 @@ class OrientDBRecordCreateTest extends OrientDB_TestCase
     {
         $this->db->DBOpen('demo', 'writer', 'writer');
         $this->setExpectedException('OrientDBWrongParamsException');
+        /** @noinspection PhpParamsInspection */
         $record = $this->db->recordCreate($this->clusterID);
     }
 
